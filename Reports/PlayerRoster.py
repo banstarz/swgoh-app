@@ -1,0 +1,79 @@
+from itertools import starmap
+import json
+import datetime
+from .APIClients.swgohHelp import SwgohHelpApiClient
+from .BaseClasses import ReportBuilder
+
+
+class PlayerRosterIncrementalReportBuilder(ReportBuilder):
+    def __init__(self, cred):
+        self.INCREMENTAL_ROSTER_REPORT_QUERY = '''
+        create table if not exists guild(
+        allycode int,
+        player varchar(255),
+        character varchar(255),
+        level int,
+        gp int,
+        star int,
+        gear int,
+        relic int,
+        zetas int,
+        datetime str
+        )
+        '''
+        self.client = SwgohHelpApiClient(cred)
+        self.api_response = []
+        self.FIELDS = [
+            'allycode',
+            'player',
+            'character',
+            'level',
+            'gp',
+            'star',
+            'gear',
+            'relic',
+            'zetas',
+            'datetime'
+        ]
+        
+        
+    def _extract_data(self, allycode):
+        self.api_response = self.client.players(allycode)
+        
+        
+    def __zetas(self, character):
+        return sum([flag['isZeta'] for flag in character['skills'] if flag['tier'] >= 8])
+    
+
+    def __relic(self, character):
+        relic = character['relic']
+        if relic:
+            return relic['currentTier'] if relic['currentTier'] > 1 else "NULL"
+        else:
+            return "NULL"
+
+    def fields(self):
+        return self.FIELDS
+
+
+    def _flatten_report(self):
+        today = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        allycode = self.api_response[0]['allyCode']
+        name = self.api_response[0]['name']
+        for char in self.api_response[0]['roster']:
+            yield (allycode,
+                    name,
+                    char['defId'],
+                    char['level'],
+                    char['gp'],
+                    char['rarity'],
+                    char['gear'],
+                    self.__relic(char),
+                    self.__zetas(char),
+                    today
+                )
+
+    def get_record(self, allycode):
+        self._extract_data(allycode)
+        for record in self._flatten_report():
+            yield record

@@ -6,6 +6,18 @@ __pycache__/
 # C extensions
 *.so
 
+#All txt files
+*.txt
+
+#Credentials
+*.json
+
+#DB files
+*.db
+
+#test
+test.py
+
 # Distribution / packaging
 .Python
 build/
