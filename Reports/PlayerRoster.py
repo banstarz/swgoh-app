@@ -5,36 +5,22 @@ from .APIClients.swgohHelp import SwgohHelpApiClient
 from .BaseClasses import ReportBuilder
 
 
-class PlayerRosterIncrementalReportBuilder(ReportBuilder):
+class PlayerRosterReportBuilder(ReportBuilder):
     def __init__(self, cred):
-        self.INCREMENTAL_ROSTER_REPORT_QUERY = '''
-        create table if not exists guild(
-        allycode int,
-        player varchar(255),
-        character varchar(255),
-        level int,
-        gp int,
-        star int,
-        gear int,
-        relic int,
-        zetas int,
-        datetime str
-        )
-        '''
         self.client = SwgohHelpApiClient(cred)
         self.api_response = []
-        self.FIELDS = [
-            'allycode',
-            'player',
-            'character',
-            'level',
-            'gp',
-            'star',
-            'gear',
-            'relic',
-            'zetas',
-            'datetime'
-        ]
+        self.FIELDS = {
+            'allycode': 'int',
+            'player': 'varchar(255)',
+            'character': 'varchar(255)',
+            'level': 'int',
+            'gp': 'int',
+            'star': 'int',
+            'gear': 'int',
+            'relic': 'int',
+            'zetas': 'int',
+            'datetime': 'date'
+        }
         
         
     def _extract_data(self, allycode):
@@ -53,6 +39,9 @@ class PlayerRosterIncrementalReportBuilder(ReportBuilder):
             return "NULL"
 
     def fields(self):
+        return self.FIELDS.keys()
+
+    def report_structure(self):
         return self.FIELDS
 
 

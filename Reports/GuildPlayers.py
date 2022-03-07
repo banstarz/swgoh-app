@@ -7,30 +7,18 @@ from .BaseClasses import ReportBuilder
 
 class GuildPlayersReportBuilder(ReportBuilder):
     def __init__(self, cred):
-        self.INCREMENTAL_ROSTER_REPORT_QUERY = '''
-        create table if not exists guild_players(
-            guild_name varvhar(255),
-            name varchar(255),
-            allyCode int,
-            level int,
-            gp int,
-            gpChar int,
-            gpShip int,
-            datetime date
-        )
-        '''
         self.client = SwgohHelpApiClient(cred)
         self.api_response = []
-        self.FIELDS = [
-            'guild_name',
-            'name',
-            'allyCode',
-            'level',
-            'gp',
-            'gpChar',
-            'gpShip',
-            'datetime'
-        ]
+        self.FIELDS = {
+            'guild_name': 'varvhar(255)',
+            'name': 'varvhar(255)',
+            'allyCode': 'int',
+            'level': 'int',
+            'gp': 'int',
+            'gpChar': 'int',
+            'gpShip': 'int',
+            'datetime': 'date'
+        }
         
         
     def _extract_data(self, allycode):
@@ -38,8 +26,10 @@ class GuildPlayersReportBuilder(ReportBuilder):
     
 
     def fields(self):
-        return self.FIELDS
+        return self.FIELDS.keys()
 
+    def report_structure(self):
+        return self.FIELDS
 
     def _flatten_report(self):
         today = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')

@@ -10,7 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Reports.GuildPlayers import GuildPlayersReportBuilder
-from Reports.PlayerRoster import PlayerRosterIncrementalReportBuilder
+from Reports.PlayerRoster import PlayerRosterReportBuilder
 import json
 
 
@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
         with open('settings.json') as inf:
             cred = json.load(inf)
         allycode = self.lineEdit.text()
-        my_requester = PlayerRosterIncrementalReportBuilder(cred)
+        my_requester = PlayerRosterReportBuilder(cred)
         #my_requester = GuildPlayersReportBuilder(cred)
         data = my_requester.get_record(allycode)
 
