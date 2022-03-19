@@ -11,6 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Reports.GuildPlayers import GuildPlayersReportBuilder
 from Reports.PlayerRoster import PlayerRosterReportBuilder
+from Reports.DataRequestManager import DataRequestManager
 import json
 
 
@@ -55,12 +56,13 @@ class Ui_MainWindow(object):
         with open('settings.json') as inf:
             cred = json.load(inf)
         allycode = self.lineEdit.text()
-        my_requester = PlayerRosterReportBuilder(cred)
-        #my_requester = GuildPlayersReportBuilder(cred)
-        data = my_requester.get_record(allycode)
+        # my_requester = PlayerRosterReportBuilder(cred)
+        # my_requester = GuildPlayersReportBuilder(cred)
+        drm = DataRequestManager('guild_players')
+        data = drm.get_records(allycode)
 
-        self.tableWidget.setColumnCount(len(my_requester.fields()))
-        column_label = my_requester.fields()
+        column_label = drm.get_field_names()
+        self.tableWidget.setColumnCount(len(column_label))
         self.tableWidget.setHorizontalHeaderLabels(column_label)
 
         self.tableWidget.setRowCount(0)

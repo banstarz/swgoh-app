@@ -1,5 +1,3 @@
-from itertools import starmap
-import json
 import datetime
 from .APIClients.swgohHelp import SwgohHelpApiClient
 from .BaseClasses import ReportBuilder
@@ -19,6 +17,7 @@ class GuildPlayersReportBuilder(ReportBuilder):
             'gpShip': 'int',
             'datetime': 'date'
         }
+        self.TABLE_NAME = 'guild_players'
         
         
     def _extract_data(self, allycode):

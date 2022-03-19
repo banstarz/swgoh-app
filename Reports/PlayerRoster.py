@@ -1,5 +1,3 @@
-from itertools import starmap
-import json
 import datetime
 from .APIClients.swgohHelp import SwgohHelpApiClient
 from .BaseClasses import ReportBuilder
@@ -21,6 +19,7 @@ class PlayerRosterReportBuilder(ReportBuilder):
             'zetas': 'int',
             'datetime': 'date'
         }
+        self.TABLE_NAME = 'player_roster'
         
         
     def _extract_data(self, allycode):
