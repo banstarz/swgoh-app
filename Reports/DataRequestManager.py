@@ -1,9 +1,9 @@
-from DBManager import DatabaseManager
+from .DBManager import DatabaseManager
 import datetime
 
 class DataRequestManager:
-    def __init__(self, report_name):
-        self.db_manager = DatabaseManager(report_name)
+    def __init__(self, report_name, cred):
+        self.db_manager = DatabaseManager(report_name, cred)
 
     def refresh_data_if_needed(self, allycode):
         date_format = '%Y-%m-%d %H:%M:%S'

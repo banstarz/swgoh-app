@@ -58,7 +58,7 @@ class Ui_MainWindow(object):
         allycode = self.lineEdit.text()
         # my_requester = PlayerRosterReportBuilder(cred)
         # my_requester = GuildPlayersReportBuilder(cred)
-        drm = DataRequestManager('guild_players')
+        drm = DataRequestManager('guild_players', cred)
         data = drm.get_records(allycode)
 
         column_label = drm.get_field_names()
