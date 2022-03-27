@@ -39,23 +39,15 @@ class DatabaseManager():
         fields = ','.join(fields_list)
         return self.CREATE_IF_NOT_EXISTS_QUERY + f' ({fields})'
 
-
-    # def get_table_by_name(self):
-    #     with sqlite3.connect('swgoh.db') as conn:
-    #         conn.execute(self.GET_TABLE_BY_NAME_QUERY)
-    #         return conn.fetchone()
-
     def create_table_if_not_exists(self):
-        with sqlite3.connect('swgoh.db') as conn:
-            cur = conn.cursor()
-            cur.execute(self._generate_create_table_query())
+        sql_query = self._generate_create_table_query()
+        DatabaseManager.execute_sql_query(sql_query)
 
     def get_max_date(self):
         self.create_table_if_not_exists()
-        with sqlite3.connect('swgoh.db') as conn:
-            cur = conn.cursor()
-            cur.execute(self.GET_MAX_DATE_QUERY)
-            return cur.fetchone()[0] or '1970-01-01 00:00:00'
+        res = DatabaseManager.execute_sql_query(self.GET_MAX_DATE_QUERY)
+        next(res)
+        return next(res)[0]
 
     def refresh_data(self, allycode):
         flattened_data_iterator = self.report_builder.get_record
@@ -64,7 +56,19 @@ class DatabaseManager():
             cur.executemany(self._generate_insert_query(), flattened_data_iterator(allycode))
 
     def get_records(self):
+        yield from DatabaseManager.execute_sql_query(self.SELECT_DATA_QUERY)
+
+    @staticmethod
+    def get_all_tables_names():
+        GET_TABLES_NAMES_QUERY = "SELECT name as \'Tables names\' FROM sqlite_master WHERE type='table'"
+        yield from DatabaseManager.execute_sql_query(GET_TABLES_NAMES_QUERY)
+
+    @staticmethod
+    def execute_sql_query(sql_query):
         with sqlite3.connect('swgoh.db') as conn:
             cur = conn.cursor()
-            cur.execute(self.SELECT_DATA_QUERY)
-            return cur.fetchall()
+            cur.execute(sql_query)
+            res = [desc[0] for desc in cur.description]
+            while res:
+                yield res
+                res = cur.fetchone()

@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Reports.DataRequestManager import DataRequestManager
+from Reports.DataRequestManager import DatabaseManager as dbm
 import json
 import sys
 
@@ -133,11 +134,39 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.setSpacing(0)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.sql_editor_text_edit = QtWidgets.QTextEdit(self.sql_editor_body_main_frame)
+        self.sql_editor_text_edit.setMaximumSize(QtCore.QSize(16777215, 100))
         self.sql_editor_text_edit.setObjectName("sql_editor_text_edit")
         self.verticalLayout_5.addWidget(self.sql_editor_text_edit)
-        self.sql_editor_execute_button = QtWidgets.QPushButton(self.sql_editor_body_main_frame)
+        self.sql_editor_error_execute_frame = QtWidgets.QFrame(self.sql_editor_body_main_frame)
+        self.sql_editor_error_execute_frame.setMaximumSize(QtCore.QSize(16777215, 25))
+        self.sql_editor_error_execute_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.sql_editor_error_execute_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.sql_editor_error_execute_frame.setObjectName("sql_editor_error_execute_frame")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.sql_editor_error_execute_frame)
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_4.setSpacing(0)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.sql_editor_error_message_label = QtWidgets.QLabel(self.sql_editor_error_execute_frame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.sql_editor_error_message_label.sizePolicy().hasHeightForWidth())
+        self.sql_editor_error_message_label.setSizePolicy(sizePolicy)
+        self.sql_editor_error_message_label.setMaximumSize(QtCore.QSize(16777215, 25))
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setBold(True)
+        font.setWeight(75)
+        self.sql_editor_error_message_label.setFont(font)
+        self.sql_editor_error_message_label.setAutoFillBackground(True)
+        self.sql_editor_error_message_label.setText("")
+        self.sql_editor_error_message_label.setObjectName("sql_editor_error_message_label")
+        self.horizontalLayout_4.addWidget(self.sql_editor_error_message_label)
+        self.sql_editor_execute_button = QtWidgets.QPushButton(self.sql_editor_error_execute_frame)
+        self.sql_editor_execute_button.setMaximumSize(QtCore.QSize(200, 16777215))
         self.sql_editor_execute_button.setObjectName("sql_editor_execute_button")
-        self.verticalLayout_5.addWidget(self.sql_editor_execute_button, 0, QtCore.Qt.AlignRight)
+        self.horizontalLayout_4.addWidget(self.sql_editor_execute_button, 0, QtCore.Qt.AlignRight)
+        self.verticalLayout_5.addWidget(self.sql_editor_error_execute_frame)
         self.sql_editor_table_widget = QtWidgets.QTableWidget(self.sql_editor_body_main_frame)
         self.sql_editor_table_widget.setObjectName("sql_editor_table_widget")
         self.sql_editor_table_widget.setColumnCount(0)
@@ -151,9 +180,11 @@ class Ui_MainWindow(object):
         self.side_menu_button_player_roster.clicked.connect(self.open_player_roster_tab)
         self.side_menu_button_sql_editor.clicked.connect(self.open_sql_editor_tab)
         self.request_data_button.clicked.connect(self.load_data)
+        self.sql_editor_execute_button.clicked.connect(self.sql_editor_execute_query)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.open_guild_players_tab()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -188,6 +219,22 @@ class Ui_MainWindow(object):
         self.collapse_all_tabs()
         self.sql_editor_main_frame.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.table_name = ''
+        self.fill_side_menu_with_tables_names()
+
+    def fill_side_menu_with_tables_names(self):
+        table_names = dbm.get_all_tables_names()
+        table_widget = self.sql_editor_side_menu_table_widget
+        self.populate_table_widget_with_query_results(table_widget, table_names)
+
+    def sql_editor_execute_query(self):
+        sql_query = self.sql_editor_text_edit.toPlainText()
+        try:
+            sql_query_result = dbm.execute_sql_query(sql_query)
+            self.populate_table_widget_with_query_results(self.sql_editor_table_widget, sql_query_result)
+        except Exception as exc:
+            self.sql_editor_error_message_label.setText(str(exc))
+        else:
+            self.sql_editor_error_message_label.setText('')
 
     def load_data(self):
         if self.table_name:
@@ -201,16 +248,20 @@ class Ui_MainWindow(object):
             drm = DataRequestManager(self.table_name, cred)
             data = drm.get_records(allycode)
             table_widget = table_name_table_widget_dict.get(self.table_name)
+            self.populate_table_widget_with_query_results(table_widget, data)
+            
 
-            column_label = drm.get_field_names()
-            table_widget.setColumnCount(len(column_label))
-            table_widget.setHorizontalHeaderLabels(column_label)
+    def populate_table_widget_with_query_results(self, table_widget, query_result):
+        column_labels = next(query_result)
+        table_widget.setColumnCount(len(column_labels))
+        table_widget.setHorizontalHeaderLabels(column_labels)
 
-            table_widget.setRowCount(0)
-            for row, character in enumerate(data):
-                table_widget.insertRow(row)
-                for i, value in enumerate(character):
-                    table_widget.setItem(row, i, QtWidgets.QTableWidgetItem(str(value)))
+        table_widget.setRowCount(0)
+        for row_number, row_content in enumerate(query_result):
+            table_widget.insertRow(row_number)
+            for column_number, cell_value in enumerate(row_content):
+                table_widget.setItem(row_number, column_number, QtWidgets.QTableWidgetItem(str(cell_value)))
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
