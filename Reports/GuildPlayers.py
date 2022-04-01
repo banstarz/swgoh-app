@@ -18,6 +18,7 @@ class GuildPlayersReportBuilder(ReportBuilder):
             'datetime': 'date'
         }
         self.TABLE_NAME = 'guild_players'
+        self.IS_INCREMENTAL = False
         
         
     def _extract_data(self, allycode):

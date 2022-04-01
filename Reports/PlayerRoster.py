@@ -20,6 +20,7 @@ class PlayerRosterReportBuilder(ReportBuilder):
             'datetime': 'date'
         }
         self.TABLE_NAME = 'player_roster'
+        self.IS_INCREMENTAL = False
         
         
     def _extract_data(self, allycode):
