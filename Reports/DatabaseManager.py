@@ -1,13 +1,15 @@
 import sqlite3
 from .GuildPlayers import GuildPlayersReportBuilder
 from .PlayerRoster import PlayerRosterReportBuilder
+from .SwgohUnits import SwgohUnitsReportBuilder
 
 class DatabaseManager():
     
     def __init__(self, report_name, cred):
         self.BUILDER_BY_REPORT = {
             'guild_players': GuildPlayersReportBuilder,
-            'player_roster': PlayerRosterReportBuilder
+            'player_roster': PlayerRosterReportBuilder,
+            'swgoh_units': SwgohUnitsReportBuilder
         }
         self.report_builder = self.BUILDER_BY_REPORT.get(report_name)(cred)
         self.tablename = self.report_builder.TABLE_NAME
@@ -58,22 +60,22 @@ class DatabaseManager():
         fields = ', '.join(fields_list)
         return self.CREATE_IF_NOT_EXISTS_QUERY + f' ({fields})'        
 
-    def create_table_if_not_exists(self):
+    def _create_table_if_not_exists(self):
         sql_query = self._generate_create_table_query()
         DatabaseManager.execute_sql_query(sql_query)
     
-    def drop_table(self):
+    def _drop_table(self):
         DatabaseManager.execute_sql_query(self.DROP_TABLE_QUERY)
 
     def get_max_date(self):
-        self.create_table_if_not_exists()
+        self._create_table_if_not_exists()
         res = DatabaseManager.execute_sql_query(self.GET_MAX_DATE_QUERY, need_sql_result=True)
         next(res)
         return next(res)[0]
 
     def refresh_data(self, allycode):
         if not self.report_builder.IS_INCREMENTAL:
-            self.drop_table()
+            self._drop_table()
         flattened_data_iterator = self.report_builder.get_record
         with sqlite3.connect('swgoh.db') as conn:
             cur = conn.cursor()

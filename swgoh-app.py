@@ -205,15 +205,23 @@ class Ui_MainWindow(object):
         for frame in body_frames:
             frame.setMaximumSize(QtCore.QSize(16777215, 0))
 
+    def refresh_swgoh_units_table(self):
+        self.table_name = 'swgoh_units'
+        drm = DataRequestManager(self.table_name)
+        drm.refresh_data_if_needed()
+
     def open_guild_players_tab(self):
         self.collapse_all_tabs()
         self.guild_players_main_frame.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.refresh_swgoh_units_table()
         self.table_name = 'guild_players'
 
     def open_player_roster_tab(self):
         self.collapse_all_tabs()
         self.player_roster_main_frame.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.refresh_swgoh_units_table()
         self.table_name = 'player_roster'
+
 
     def open_sql_editor_tab(self):
         self.collapse_all_tabs()
@@ -229,7 +237,7 @@ class Ui_MainWindow(object):
     def sql_editor_execute_query(self):
         sql_query = self.sql_editor_text_edit.toPlainText()
         try:
-            sql_query_result = dbm.execute_sql_query(sql_query)
+            sql_query_result = dbm.execute_sql_query(sql_query, need_sql_result=True)
             self.populate_table_widget_with_query_results(self.sql_editor_table_widget, sql_query_result)
         except Exception as exc:
             self.sql_editor_error_message_label.setText(str(exc))
