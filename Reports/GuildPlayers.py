@@ -4,6 +4,7 @@ from .BaseClasses import ReportBuilder
 
 
 class GuildPlayersReportBuilder(ReportBuilder):
+    
     def __init__(self, cred):
         self.client = SwgohHelpApiClient(cred)
         self.api_response = []
@@ -20,10 +21,8 @@ class GuildPlayersReportBuilder(ReportBuilder):
         self.TABLE_NAME = 'guild_players'
         self.IS_INCREMENTAL = False
         
-        
-    def _extract_data(self, allycode):
-        self.api_response = self.client.guild(allycode)
-    
+    def _extract_data(self, allycode, access_token):
+        self.api_response = self.client.guild(allycode, access_token)
 
     def fields(self):
         return self.FIELDS.keys()
@@ -45,7 +44,7 @@ class GuildPlayersReportBuilder(ReportBuilder):
                     today
                 )
 
-    def get_record(self, allycode):
-        self._extract_data(allycode)
+    def get_record(self, allycode, access_token):
+        self._extract_data(allycode, access_token)
         for record in self._flatten_report():
             yield record

@@ -4,6 +4,7 @@ from .BaseClasses import ReportBuilder
 
 
 class PlayerRosterReportBuilder(ReportBuilder):
+    
     def __init__(self, cred):
         self.client = SwgohHelpApiClient(cred)
         self.api_response = []
@@ -22,14 +23,11 @@ class PlayerRosterReportBuilder(ReportBuilder):
         self.TABLE_NAME = 'player_roster'
         self.IS_INCREMENTAL = False
         
-        
-    def _extract_data(self, allycode):
-        self.api_response = self.client.players(allycode)
-        
+    def _extract_data(self, allycode, access_token):
+        self.api_response = self.client.players(allycode, access_token)
         
     def __zetas(self, character):
         return sum([flag['isZeta'] for flag in character['skills'] if flag['tier'] >= 8])
-    
 
     def __relic(self, character):
         relic = character['relic']
@@ -43,7 +41,6 @@ class PlayerRosterReportBuilder(ReportBuilder):
 
     def report_structure(self):
         return self.FIELDS
-
 
     def _flatten_report(self):
         today = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
@@ -62,7 +59,7 @@ class PlayerRosterReportBuilder(ReportBuilder):
                     today
                 )
 
-    def get_record(self, allycode):
-        self._extract_data(allycode)
+    def get_record(self, allycode, access_token):
+        self._extract_data(allycode, access_token)
         for record in self._flatten_report():
             yield record

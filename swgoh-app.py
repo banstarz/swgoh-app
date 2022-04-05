@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Reports.DataRequestManager import DataRequestManager
-from Reports.DataRequestManager import DatabaseManager as dbm
+from Reports.TaskManager import TaskManager
+from Reports.DatabaseManager import DatabaseManager as dbm
 import json
 import sys
 
@@ -207,7 +207,7 @@ class Ui_MainWindow(object):
 
     def refresh_swgoh_units_table(self):
         self.table_name = 'swgoh_units'
-        drm = DataRequestManager(self.table_name)
+        drm = TaskManager(self.table_name)
         drm.refresh_data_if_needed()
 
     def open_guild_players_tab(self):
@@ -221,7 +221,6 @@ class Ui_MainWindow(object):
         self.player_roster_main_frame.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.refresh_swgoh_units_table()
         self.table_name = 'player_roster'
-
 
     def open_sql_editor_tab(self):
         self.collapse_all_tabs()
@@ -253,7 +252,7 @@ class Ui_MainWindow(object):
             with open('settings.json') as inf:
                 cred = json.load(inf)
             allycode = self.allycode_line_edit.text()
-            drm = DataRequestManager(self.table_name, cred)
+            drm = TaskManager(self.table_name, cred)
             data = drm.get_records(allycode)
             table_widget = table_name_table_widget_dict.get(self.table_name)
             self.populate_table_widget_with_query_results(table_widget, data)

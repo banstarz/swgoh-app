@@ -4,6 +4,7 @@ from .BaseClasses import ReportBuilder
 
 
 class SwgohUnitsReportBuilder(ReportBuilder):
+    
     def __init__(self, *args):
         self.client = SwgohGGApiClient()
         self.FIELDS = {
@@ -13,7 +14,6 @@ class SwgohUnitsReportBuilder(ReportBuilder):
         }
         self.TABLE_NAME = 'swgoh_units'
         self.IS_INCREMENTAL = False
-        
         
     def _extract_data(self):
         self.api_response = self.client.swgoh_units()
