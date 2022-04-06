@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Reports.TaskManager import TaskManager
-from Reports.DatabaseManager import DatabaseManager as dbm
+from Reports.DatabaseManager.DatabaseManager import DatabaseManager as dbm
 import json
 import sys
 

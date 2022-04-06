@@ -1,4 +1,4 @@
-from .DatabaseManager import DatabaseManager
+from .DatabaseManager.DatabaseManager import DatabaseManager
 from .ReportBuildersManager import ReportBuildersManager
 import datetime
 
