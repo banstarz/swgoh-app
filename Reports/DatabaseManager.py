@@ -90,7 +90,7 @@ class DatabaseManager():
         return list(expiration_date)[-1][0] if len(expiration_date) > 1 else None
 
     def update_access_token(self, api_name, access_token, expiration_date):
-        DELETE_EXPIRED_TOKEN_QUERY = '''
+        DELETE_EXPIRED_TOKEN_QUERY = f'''
         DELETE from access_tokens
         where api_name = "{api_name}";
         '''

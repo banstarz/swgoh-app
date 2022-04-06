@@ -30,7 +30,9 @@ class TaskManager:
         if (datetime_now - datetime_last).total_seconds() > 14400:
             access_token = self.db_manager.get_access_token()
             flattened_data_iterator = self.rb_manager.get_flattened_data_iterator()
-            self.db_manager.refresh_data(flattened_data_iterator(allycode, access_token), self.rb_manager.report_structure())
+            self.db_manager.refresh_data(flattened_data_iterator(allycode, access_token), 
+                                            self.rb_manager.report_structure(),
+                                            not self.rb_manager.report_builder.IS_INCREMENTAL)
 
     def get_records(self, allycode=0):
         self.refresh_data_if_needed(allycode)
