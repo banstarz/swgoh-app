@@ -11,6 +11,10 @@ class SwgohGGApiClient:
     def auth(self):
         return ('Fake_access_token', 100000000)
 
-    def swgoh_units(self):
+    def swgoh_characters(self):
         with requests.post('http://swgoh.gg/api/characters') as response:
+            return response.json()
+
+    def swgoh_ships(self):
+        with requests.post('http://swgoh.gg/api/ships') as response:
             return response.json()

@@ -3,20 +3,20 @@ from .APIClients.swgohGG import SwgohGGApiClient
 from .BaseClasses import ReportBuilder
 
 
-class SwgohUnitsReportBuilder(ReportBuilder):
+class SwgohCharactersReportBuilder(ReportBuilder):
     
     def __init__(self, *args):
         self.client = SwgohGGApiClient()
         self.FIELDS = {
-            'player': 'varchar(255)',
-            'character': 'varchar(255)',
+            'game_name': 'varchar(255)',
+            'base_name': 'varchar(255)',
             'datetime': 'date'
         }
-        self.TABLE_NAME = 'swgoh_units'
+        self.TABLE_NAME = 'swgoh_characters'
         self.IS_INCREMENTAL = False
         
     def _extract_data(self):
-        self.api_response = self.client.swgoh_units()
+        self.api_response = self.client.swgoh_characters()
 
     def fields(self):
         return self.FIELDS.keys()

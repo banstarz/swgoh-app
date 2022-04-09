@@ -24,6 +24,7 @@ class TaskManager:
             self.db_manager.update_access_token(api_name, access_token, new_expiration_date)
 
     def refresh_data_if_needed(self, allycode=0):
+        self.db_manager.create_table_if_not_exists(self.table_name, self.rb_manager.report_structure())
         table_max_date = self.db_manager.get_max_date(self.table_name) or '1970-01-01 00:00:00'
         datetime_last =  datetime.datetime.strptime(table_max_date, self.date_format) 
         datetime_now = datetime.datetime.now()
