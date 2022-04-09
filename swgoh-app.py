@@ -210,16 +210,23 @@ class Ui_MainWindow(object):
         drm = TaskManager(self.table_name)
         drm.refresh_data_if_needed()
 
+    def refresh_swgoh_ships_table(self):
+        self.table_name = 'swgoh_ships'
+        drm = TaskManager(self.table_name)
+        drm.refresh_data_if_needed()
+
     def open_guild_players_tab(self):
         self.collapse_all_tabs()
         self.guild_players_main_frame.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.refresh_swgoh_characters_table()
+        self.refresh_swgoh_ships_table()
         self.table_name = 'guild_players'
 
     def open_player_roster_tab(self):
         self.collapse_all_tabs()
         self.player_roster_main_frame.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.refresh_swgoh_characters_table()
+        self.refresh_swgoh_ships_table()
         self.table_name = 'player_roster'
 
     def open_sql_editor_tab(self):

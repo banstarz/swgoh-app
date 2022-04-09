@@ -1,6 +1,7 @@
 from .GuildPlayers import GuildPlayersReportBuilder
 from .PlayerRoster import PlayerRosterReportBuilder
 from .SwgohCharacters import SwgohCharactersReportBuilder
+from .SwgohShips import SwgohShipsReportBuilder
 
 
 class ReportBuildersManager:
@@ -9,7 +10,8 @@ class ReportBuildersManager:
         self.BUILDER_BY_REPORT = {
             'guild_players': GuildPlayersReportBuilder,
             'player_roster': PlayerRosterReportBuilder,
-            'swgoh_characters': SwgohCharactersReportBuilder
+            'swgoh_characters': SwgohCharactersReportBuilder,
+            'swgoh_ships': SwgohShipsReportBuilder
         }
         self.report_builder = self.BUILDER_BY_REPORT.get(report_name)(cred)
         self.tablename = self.report_builder.TABLE_NAME

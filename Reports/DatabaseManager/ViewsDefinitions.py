@@ -23,18 +23,18 @@ class ViewDefinitions():
         SELECT
             pr.allycode as 'Ally Code',
             pr.player as Player,
-            pr.character as 'Base Name',
+            --pr.character as 'Base Name',
             sc.game_name as Character,
             pr.level as Level,
             pr.gp as GP,
             pr.star as Stars,
             pr.gear as Gear,
-            pr.relic as Relic,
-            pr.zetas as Zetas,
+            replace(pr.relic-2, -2, '') as Relic,
+            replace(pr.zetas, 0, '') as Zetas,
             pr.datetime as 'Last Updated'
         FROM
             player_roster pr
-        LEFT JOIN
+        INNER JOIN
             swgoh_characters sc
         on pr.character = sc.base_name
         '''
@@ -44,18 +44,15 @@ class ViewDefinitions():
         SELECT
             pr.allycode as 'Ally Code',
             pr.player as Player,
-            pr.character as 'Base Name',
+            --pr.character as 'Base Name',
             ss.game_name as Character,
             pr.level as Level,
             pr.gp as GP,
             pr.star as Stars,
-            pr.gear as Gear,
-            pr.relic as Relic,
-            pr.zetas as Zetas,
             pr.datetime as 'Last Updated'
         FROM
             player_roster pr
-        LEFT JOIN
+        INNER JOIN
             swgoh_ships ss
         on pr.character = ss.base_name
         '''
