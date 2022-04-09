@@ -3,9 +3,10 @@ import sqlite3
 
 class SqlQueries():
 
-    def select_data_query(tablename):
+    def get_records_query(tablename):
         SELECT_DATA_QUERY = f'''
-            SELECT * FROM {tablename}
+            SELECT * 
+            FROM {tablename}
         '''
         return SELECT_DATA_QUERY
 
@@ -17,11 +18,12 @@ class SqlQueries():
 
     def get_max_date_query(tablename):
         GET_MAX_DATE_QUERY = f'''
-            SELECT max(datetime) FROM {tablename}
+            SELECT max(datetime) 
+            FROM {tablename}
         '''
         return GET_MAX_DATE_QUERY
 
-    def insert_query(self, tablename, report_structure):
+    def insert_query(tablename, report_structure):
         INSERT_INTO_QUERY = f'''
             INSERT INTO {tablename} VALUES
         '''
@@ -38,30 +40,32 @@ class SqlQueries():
         '''
         return CREATE_ACCESS_TOKENS_IF_NOT_EXISTS_QUERY
 
-    def get_token_expiration_date_query(tablename, api_name):
+    def get_token_expiration_date_query(api_name):
         GET_TOKEN_EXPIRATION_DATE_QUERY = f'''
-            SELECT expiration_date FROM access_tokens
+            SELECT expiration_date 
+            FROM access_tokens
             WHERE api_name = "{api_name}"
         '''
         return GET_TOKEN_EXPIRATION_DATE_QUERY
 
     def delete_expired_token_query(api_name):
         DELETE_EXPIRED_TOKEN_QUERY = f'''
-            DELETE from access_tokens
-            where api_name = "{api_name}"
+            DELETE FROM access_tokens
+            WHERE api_name = "{api_name}"
         '''
         return DELETE_EXPIRED_TOKEN_QUERY
 
-    def update_access_token(self, api_name, access_token, expiration_date):
+    def update_access_token(api_name, access_token, expiration_date):
         INSERT_OR_UPDATE_TOKEN_QUERY = f'''
             INSERT into access_tokens VALUES
             ("{api_name}", "{access_token}", "{expiration_date}")
         '''
         return INSERT_OR_UPDATE_TOKEN_QUERY
 
-    def get_access_token_query(tablename, api_name):
+    def get_access_token_query(api_name):
         GET_ACCESS_TOKEN_QUERY = f'''
-            SELECT access_token from access_tokens
+            SELECT access_token 
+            FROM access_tokens
             WHERE api_name = "{api_name}"
         '''
         return GET_ACCESS_TOKEN_QUERY
@@ -74,10 +78,18 @@ class SqlQueries():
         '''
         return GET_TABLE_BY_NAME_QUERY
 
-    def create_table_query(self, tablename, report_structure):
+    def create_table_query(tablename, report_structure):
         CREATE_IF_NOT_EXISTS_QUERY = f'''
             CREATE TABLE IF NOT EXISTS {tablename}
         '''
         fields_list = [f'{field} {fieldtype}' for field, fieldtype in report_structure.items()]
         fields = ', '.join(fields_list)
         return CREATE_IF_NOT_EXISTS_QUERY + f' ({fields})'
+
+    def get_tables_names_query():
+        GET_TABLES_NAMES_QUERY = '''
+            SELECT name AS "Tables names" 
+            FROM sqlite_master 
+            WHERE type='table'
+        '''
+        return GET_TABLES_NAMES_QUERY
