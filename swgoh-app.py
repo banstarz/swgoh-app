@@ -208,12 +208,14 @@ class Ui_MainWindow(object):
     def refresh_swgoh_characters_table(self):
         self.table_name = 'swgoh_characters'
         drm = TaskManager(self.table_name)
-        drm.refresh_data_if_needed()
+        if drm.refresh_data_if_needed() is None:
+            return None
 
     def refresh_swgoh_ships_table(self):
         self.table_name = 'swgoh_ships'
         drm = TaskManager(self.table_name)
-        drm.refresh_data_if_needed()
+        if drm.refresh_data_if_needed() is None:
+            return None
 
     def open_guild_players_tab(self):
         self.collapse_all_tabs()

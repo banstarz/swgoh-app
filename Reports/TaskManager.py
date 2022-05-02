@@ -31,10 +31,13 @@ class TaskManager:
         if (datetime_now - datetime_last).total_seconds() > 14400:
             access_token = self.db_manager.get_access_token(self.api_name)
             flattened_data_iterator = self.rb_manager.get_flattened_data_iterator()
+            if flattened_data_iterator is None:
+                return None
             self.db_manager.refresh_data(self.table_name,
                                             self.rb_manager.report_structure(),
                                             flattened_data_iterator(allycode, access_token), 
                                             not self.rb_manager.report_builder.IS_INCREMENTAL)
+        return True
 
     def get_records(self, allycode=0):
         self.refresh_data_if_needed(allycode)

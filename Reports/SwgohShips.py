@@ -25,6 +25,8 @@ class SwgohShipsReportBuilder(ReportBuilder):
         return self.FIELDS
 
     def _flatten_report(self):
+        if self.api_response is None:
+            return None
         today = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         for unit in self.api_response:
             yield (unit['name'],

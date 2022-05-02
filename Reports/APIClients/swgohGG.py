@@ -13,8 +13,14 @@ class SwgohGGApiClient:
 
     def swgoh_characters(self):
         with requests.post('http://swgoh.gg/api/characters') as response:
-            return response.json()
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return None
 
     def swgoh_ships(self):
         with requests.post('http://swgoh.gg/api/ships') as response:
-            return response.json()
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return None
