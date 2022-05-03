@@ -15,7 +15,7 @@ __pycache__/
 #DB files
 *.db
 
-#test
+#file for testing some pieces of code
 test.py
 
 # Distribution / packaging
