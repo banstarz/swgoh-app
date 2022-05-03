@@ -1,6 +1,6 @@
 import datetime
-from .APIClients.swgohGG import SwgohGGApiClient
-from .BaseClasses import ReportBuilder
+from ..APIClients.swgohGG import SwgohGGApiClient
+from ..BaseClasses import ReportBuilder
 
 
 class SwgohCharactersReportBuilder(ReportBuilder):

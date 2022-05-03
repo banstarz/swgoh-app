@@ -1,7 +1,7 @@
-from .GuildPlayers import GuildPlayersReportBuilder
-from .PlayerRoster import PlayerRosterReportBuilder
-from .SwgohCharacters import SwgohCharactersReportBuilder
-from .SwgohShips import SwgohShipsReportBuilder
+from .ReportBuilders.GuildPlayers import GuildPlayersReportBuilder
+from .ReportBuilders.PlayerRoster import PlayerRosterReportBuilder
+from .ReportBuilders.SwgohCharacters import SwgohCharactersReportBuilder
+from .ReportBuilders.SwgohShips import SwgohShipsReportBuilder
 
 
 class ReportBuildersManager:

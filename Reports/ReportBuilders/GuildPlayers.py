@@ -1,6 +1,6 @@
 import datetime
-from .APIClients.swgohHelp import SwgohHelpApiClient
-from .BaseClasses import ReportBuilder
+from ..APIClients.swgohHelp import SwgohHelpApiClient
+from ..BaseClasses import ReportBuilder
 
 
 class GuildPlayersReportBuilder(ReportBuilder):
